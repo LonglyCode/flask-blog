@@ -10,10 +10,10 @@ from jinja2.filters import do_striptags, do_truncate
 from .utils import markdown_render
 
 class Todo(db.Model):
-    __tablename__="todos"
+    __tablename__="testtodos"
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(128))
-    time =db.Column(db.DateTime,default=datetime.datetime.now())
+    time =db.Column(db.DateTime,default=datetime.now())
     status = db.Column(db.Integer,default=0)
 
     def to_json(self):
@@ -177,7 +177,7 @@ class Post(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime,index=True,dafault=datetime.utcnow)
+    timestamp = db.Column(db.DateTime,index=True,default=datetime.now())
     author_id = db.Column(db.Integer,db.ForeignKey('users.id'))
 
     @staticmethod
