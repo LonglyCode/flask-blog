@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block TITLE %}TODO{% endblock %}
+
+{% block page_content %}
+<div class="jumbotron" id="todo-container"></div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript" src="../../static/js/build/bundle.js"></script>
+{% endblock %}
