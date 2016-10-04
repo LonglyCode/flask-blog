@@ -1,9 +1,13 @@
+# -*- coding: utf-8 -*-
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
 from flask.ext.login import UserMixin, AnonymousUserMixin
 from . import db, login_manager
 from datetime import datetime
+from jinja2.filters import do_striptags, do_truncate
+from .utils import markdown_render
 
 class Todo(db.Model):
     __tablename__="todos"
@@ -172,5 +176,12 @@ class Post(db.Model):
     __tablename__ = 'post'
     id = db.Column(db.Integer,primary_key=True)
     body = db.Column(db.Text)
+    body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime,index=True,dafault=datetime.utcnow)
     author_id = db.Column(db.Integer,db.ForeignKey('users.id'))
+
+    @staticmethod
+    def on_chang_body(target,value,oldvalue,initiator):
+        target.body_html = markdown_render(value,codehilite=True)
+
+db.event.listen(Post.body,'set',Post.on_chang_body)

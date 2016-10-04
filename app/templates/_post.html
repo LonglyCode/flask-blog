@@ -1,15 +1,5 @@
-{% extends "base.html" %}
-{% import "wtf.html" as wtf %}
-
-{% block title %}Lonely Code{% endblock %}
-
-{% block page_content %}
-<div>
-    {% if current_user.can(Permission.WRITE_ARTICLES) %}
-    {{ wtf.quick_form(form) }}
-</div>
 <ul class="posts">
-    {% for p in posts %}
+    {% for post in posts %}
     <li class="post">
         <div class="post-date">
             {{ moment(p.timestamp).fromNow()}}
@@ -21,7 +11,11 @@
             {{ p.body }}
             {% endif %}
         </div>
+        <div class="post-footer">
+            <a href="{{ url_for('.post',id=post.id)}}">
+                <span class="label laber-default">Test</span>
+            </a>
+        </div>
     </li>
     {% endfor %}
 </ul>
-{& endblock %}
