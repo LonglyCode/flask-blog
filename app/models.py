@@ -3,7 +3,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
 from flask.ext.login import UserMixin, AnonymousUserMixin
 from . import db, login_manager
-import datetime
+from datetime import datetime
 
 class Todo(db.Model):
     __tablename__="todos"
@@ -69,6 +69,7 @@ class User(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
+    posts = db.relationship('Post',backref='author',lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -166,3 +167,10 @@ login_manager.anonymous_user = AnonymousUser
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+class Post(db.Model):
+    __tablename__ = 'post'
+    id = db.Column(db.Integer,primary_key=True)
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime,index=True,dafault=datetime.utcnow)
+    author_id = db.Column(db.Integer,db.ForeignKey('users.id'))
