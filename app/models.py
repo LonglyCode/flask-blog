@@ -78,7 +78,7 @@ class User(UserMixin, db.Model):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
-            if self.email == current_app.config['FLASKY_ADMIN']:
+            if self.email == current_app.config['APP_ADMIN']:
                 self.role = Role.query.filter_by(permissions=0xff).first()
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
@@ -186,8 +186,7 @@ class Tag(db.Model):
     __tablename__="tags"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True,nullable=False)
-    body = db.Column(db.Text)
-    body_html = db.Column(db.Text)
+    name_html = db.Column(db.Text)
     __mapper_args__ = {'order_by': [id.desc()]}
 
     def __repr__(self):
@@ -195,20 +194,19 @@ class Tag(db.Model):
 
     @staticmethod
     def on_chang_body(target,value,oldvalue,initiator):
-        target.body_html = markdown_render(value,codehilite=True)
+        target.name_html = markdown_render(value,codehilite=True)
 
-db.event.listen(Tag.body, 'set', Tag.on_chang_body)
+db.event.listen(Tag.name, 'set', Tag.on_chang_body)
 
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer,primary_key=True)
     title = db.Column(db.String(200),nullable=False)
     body = db.Column(db.Text)
-    slug = db.Column(db.String(200),nullable=False)
     body_html = db.Column(db.Text)
     pub_time = db.Column(db.DateTime,index=True,default=datetime.now)
     summary = db.Column(db.String(2000))
-    modified_time = db.Column(db.DateTime(), default=datetime.now)
+    modified_time = db.Column(db.DateTime, default=datetime.now)
     author_id = db.Column(db.Integer,db.ForeignKey('users.id'))
     category_id =db.Column(db.Integer,db.ForeignKey('categorys.id'))
 
@@ -240,12 +238,14 @@ class Category(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30),nullable=False)
-    body = db.Column(db.Text)
-    body_html = db.Column(db.Text)
+    name_html = db.Column(db.Text)
     posts = db.relationship('Post',backref='category',lazy='dynamic')
+
+    def __repr__(self):
+        return '<Category %r>' % (self.name)
 
     @staticmethod
     def on_chang_body(target,value,oldvalue,initiator):
-        target.body_html = markdown_render(value,codehilite=True)
+        target.name_html = markdown_render(value,codehilite=True)
 
-db.event.listen(Category.body, 'set', Category.on_chang_body)
+db.event.listen(Category.name, 'set', Category.on_chang_body)

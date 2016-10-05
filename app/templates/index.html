@@ -17,9 +17,9 @@
         </div>
         <div class="post-body">
             {% if p.body_html %}
-            {{ p.body_html }}
+            {{ p.body_html|safe }}
             {% else %}
-            {{ p.body }}
+            {{ p.body|safe }}
             {% endif %}
         </div>
     </li>

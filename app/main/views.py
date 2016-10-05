@@ -1,4 +1,3 @@
-#!usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from flask import render_template,redirect,url_for
@@ -7,10 +6,12 @@ from .forms import PostForm
 from ..models import Permission,Post,Tag
 from flask.ext.login import current_user
 from app import db
+from collections import defaultdict
+from ..utils import keywords_split
 
-def chang_tags(tags):
+def change_tags(tags):
     l = []
-    for tag in tags:
+    for tag in keywords_split(tags):
         tag_obj = Tag.query.filter_by(name=tag).first()
         if tag_obj is None:
             tag_obj=Tag(name=tag)
@@ -21,7 +22,13 @@ def chang_tags(tags):
 def index():
     form = PostForm()
     if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
-        post= Post(body=form.body.data,title=form.title.data,category=form.category.data,tags=chang_tags(form.tags.data),author=current_user._get_current_object())
+        post= Post(body=form.body.data,title=form.title.data,category=form.category.data,author=current_user._get_current_object())
+
+        # add tags to post
+        for t in change_tags(form.tags.data):
+            if t:
+                post.tags.append(t)
+
         db.session.add(post)
         return redirect(url_for('.index'))
     posts = Post.query.order_by(Post.pub_time.desc()).all()
@@ -31,3 +38,11 @@ def index():
 def post(id):
     post = Post.query.get_or_404(id)
     return render_template('post.html',posts=[post])
+
+@main.route('/archives')
+def achieve_posts():
+    posts = Post.query.all()
+    d=defaultdict(list)
+    for p in posts:
+        d[p.pub_time.year].append(p)
+    return render_template('archives.html',d=d)

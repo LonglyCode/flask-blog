@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from __future__ import unicode_literals
 import markdown
 from flask import Markup
 
@@ -8,6 +8,7 @@ def markdown_render(text,codehilite=True):
         'abbr', 'attr_list', 'def_list', 'sane_lists', 'fenced_code',
         'tables', 'toc', 'wikilinks',
     ]
+
     if codehilite:
         exts.append('codehilite(guess_lang=True,linenums=True)')
 
@@ -16,3 +17,12 @@ def markdown_render(text,codehilite=True):
         extensions=exts,
         safe_mode=False,
     ))
+
+def keywords_split(keywords):
+    return keywords.replace(u',', ' ') \
+                   .replace(u';', ' ') \
+                   .replace('+', ' ') \
+                   .replace('；', ' ') \
+                   .replace('，', ' ') \
+                   .replace('　', ' ') \
+                   .split(' ')

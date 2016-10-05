@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from flask.ext.wtf import Form
-from wtforms import StringField,SubmitField,TextAreaField,Field
+from wtforms import StringField,SubmitField,TextAreaField,TextField
 from wtforms.validators import Required
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from flask.ext.sqlalchemy import BaseQuery
@@ -14,7 +14,7 @@ class NameForm(Form):
 
 class PostForm(Form):
     title = StringField("add the title",validators=[Required()])
-    tags = StringField("add the tag",validators=[Required()])
+    tags = TextField("add the tag",validators=[Required()])
     category = QuerySelectField(u'选择分类',
                                 query_factory=lambda:Category.query.all(),
                                 get_pk = lambda r:r.id,
