@@ -13,7 +13,7 @@
     {% for p in posts %}
     <li class="post">
         <div class="post-date">
-            {{ moment(p.timestamp).fromNow()}}
+            {{ moment(p.pub_time).fromNow()}}
         </div>
         <div class="post-body">
             {% if p.body_html %}
