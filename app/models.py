@@ -172,16 +172,63 @@ login_manager.anonymous_user = AnonymousUser
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+
+post_tags_table = db.Table(
+    'post_tags',
+    db.Model.metadata,
+    db.Column('post_id', db.Integer, db.ForeignKey(
+        "posts.id", ondelete='CASCADE')),
+    db.Column('tag_id', db.Integer, db.ForeignKey(
+        "tags.id", ondelete='CASCADE')),
+)
+
+
 class Post(db.Model):
-    __tablename__ = 'post'
+    __tablename__ = 'posts'
     id = db.Column(db.Integer,primary_key=True)
+    title = db.Column(db.String(200),nullable=False)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime,index=True,default=datetime.now())
+    timestamp = db.Column(db.DateTime,index=True,default=datetime.now)
+    summary = db.Column(db.String(2000))
     author_id = db.Column(db.Integer,db.ForeignKey('users.id'))
+    modified_time = db.Column(db.DateTime(), default=datetime.now)
+
+    tags = db.relationship(
+        Tag, secondary=article_tags_table, backref=db.backref("posts"))
+
+
+    def __repr__(self):
+        return '<post %r>' % (self.title)
 
     @staticmethod
     def on_chang_body(target,value,oldvalue,initiator):
         target.body_html = markdown_render(value,codehilite=True)
 
+    @staticmethod
+    def insert_summary(mapper,connection,target):
+        def _format(_html):
+            return do_truncate(do_striptags(_html), length=200)
+        value = target.body
+        if target.summary is None or target.summary.strip() == '':
+            target.summary = _format(value)
+
 db.event.listen(Post.body,'set',Post.on_chang_body)
+db.event.listen(Post,'before_insert',Post.insert_summary)
+
+class Tag(db.Model):
+    __tablename__="tags"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True,nullable=False)
+    body = db.Column(db.Text)
+    body_html = db.Column(db.Text)
+    __mapper_args__ = {'order_by': [id.desc()]}
+
+    def __repr__(self):
+        return '<Tag %r>' % (self.name)
+
+    @staticmethod
+    def on_chang_body(target,value,oldvalue,initiator):
+        target.body_html = markdown_render(value,codehilite=True)
+
+db.event.listen(Tag.body, 'set', Tag.on_changed_body)

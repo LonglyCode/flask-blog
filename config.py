@@ -3,16 +3,16 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'too young too simple'
+    SECRET_KEY = os.urandom(32)
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
-    MAIL_SERVER = 'smtp.sina.com.cn'
-    MAIL_PORT = 587
+    MAIL_SERVER = 'smtp.126.com'
+    MAIL_PORT = 25
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
-    FLASKY_MAIL_SENDER = 'Flasky Admin <flasky@example.com>'
-    FLASKY_ADMIN = 'emoxun8215@126.com'
+    MAIL_SUBJECT_PREFIX = '[Lonely Code]'
+    MAIL_SENDER = 'Lonely Code Admin <emoxun8215@126.com>'
+    APP_ADMIN = 'emoxun8215@126.com'
 
     @staticmethod
     def init_app(app):
