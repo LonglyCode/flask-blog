@@ -22,7 +22,7 @@ def change_tags(tags):
 def index():
     form = PostForm()
     if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
-        post= Post(body=form.body.data,title=form.title.data,category=form.category.data,author=current_user._get_current_object())
+        post= Post(body=form.body.data,slug=form.data.slug,title=form.title.data,category=form.category.data,author=current_user._get_current_object())
 
         # add tags to post
         for t in change_tags(form.tags.data):
@@ -44,7 +44,7 @@ def post(id):
 
 @main.route('/categories/<slug>')
 def category(slug):
-    category = Categorie.query.get_or_404(slug)
+    category = Category.query.get_or_404(slug)
     return render_template('post.html',categories=[category])
 
 

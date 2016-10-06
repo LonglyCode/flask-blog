@@ -31,7 +31,7 @@ def test():
 @manager.command
 def init_db():
     Role.insert_roles()
-    c = Category(name="python")
+    c = Category(slug="python",name="python")
     db.session.add(c)
     db.session.commit()
 

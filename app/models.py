@@ -265,11 +265,11 @@ class Category(db.Model):
 
     @cached_property
     def link(self):
-        return url_for('main.category', id=self.slug, _external=True)
+        return url_for('main.category', slug=self.slug, _external=True)
 
     @cached_property
     def shortlink(self):
-        return url_for('main.category', id=self.slug)
+        return url_for('main.category', slug=self.slug)
 
     @staticmethod
     def on_chang_body(target,value,oldvalue,initiator):

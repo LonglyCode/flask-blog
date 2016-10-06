@@ -14,6 +14,7 @@ class NameForm(Form):
 
 class PostForm(Form):
     title = StringField("add the title",validators=[Required()])
+    slug = StringField("add the slug",validators=[Required()])
     tags = TextField("add the tag",validators=[Required()])
     category = QuerySelectField(u'选择分类',
                                 query_factory=lambda:Category.query.all(),
