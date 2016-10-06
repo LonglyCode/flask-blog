@@ -28,6 +28,12 @@ def test():
     tests = unittest.TestLoader().discover('tests')
     unittest.TextTestRunner(verbosity=2).run(tests)
 
+@manager.command
+def init_db():
+    Role.insert_roles()
+    c = Category(name="python")
+    db.session.add(c)
+    db.session.commit()
 
 if __name__ == '__main__':
     manager.run()

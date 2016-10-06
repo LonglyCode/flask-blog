@@ -2,12 +2,14 @@
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask import current_app
+from flask import current_app,url_for
 from flask.ext.login import UserMixin, AnonymousUserMixin
 from . import db, login_manager
 from datetime import datetime
 from jinja2.filters import do_striptags, do_truncate
 from .utils import markdown_render
+from werkzeug import cached_property
+from flask.ext.sqlalchemy import BaseQuery
 
 class Todo(db.Model):
     __tablename__="testtodos"
@@ -198,9 +200,16 @@ class Tag(db.Model):
 
 db.event.listen(Tag.name, 'set', Tag.on_chang_body)
 
+class PostQuery(BaseQuery):
+    def public(self):
+        return self.filter_by(published=True)
+
 class Post(db.Model):
     __tablename__ = 'posts'
+    query_class = PostQuery
+
     id = db.Column(db.Integer,primary_key=True)
+    slug = db.Column(db.String(200), nullable=False)
     title = db.Column(db.String(200),nullable=False)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
@@ -209,6 +218,7 @@ class Post(db.Model):
     modified_time = db.Column(db.DateTime, default=datetime.now)
     author_id = db.Column(db.Integer,db.ForeignKey('users.id'))
     category_id =db.Column(db.Integer,db.ForeignKey('categorys.id'))
+    published = db.Column(db.Boolean, default=True) # published or not
 
     tags = db.relationship(
         Tag, secondary=post_tags_table, backref=db.backref("posts"))
@@ -216,6 +226,14 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<post %r>' % (self.title)
+
+    @cached_property
+    def link(self):
+        return url_for('main.post', id=self.id, _external=True)
+
+    @cached_property
+    def shortlink(self):
+        return url_for('main.post', id=self.id)
 
     @staticmethod
     def on_chang_body(target,value,oldvalue,initiator):
@@ -237,12 +255,21 @@ class Category(db.Model):
     __tablename__="categorys"
 
     id = db.Column(db.Integer, primary_key=True)
+    slug = db.Column(db.String(30),nullable=False)
     name = db.Column(db.String(30),nullable=False)
     name_html = db.Column(db.Text)
     posts = db.relationship('Post',backref='category',lazy='dynamic')
 
     def __repr__(self):
         return '<Category %r>' % (self.name)
+
+    @cached_property
+    def link(self):
+        return url_for('main.category', id=self.slug, _external=True)
+
+    @cached_property
+    def shortlink(self):
+        return url_for('main.category', id=self.slug)
 
     @staticmethod
     def on_chang_body(target,value,oldvalue,initiator):

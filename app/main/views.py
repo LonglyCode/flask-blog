@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from flask import render_template,redirect,url_for
+from flask import render_template,redirect,url_for,abort
 from . import main
 from .forms import PostForm
-from ..models import Permission,Post,Tag
+from ..models import Permission,Post,Tag,Category
 from flask.ext.login import current_user
 from app import db
 from collections import defaultdict
@@ -37,7 +37,16 @@ def index():
 @main.route('/post/<int:id>')
 def post(id):
     post = Post.query.get_or_404(id)
+    if not post.published:
+        abort(403)
     return render_template('post.html',posts=[post])
+
+
+@main.route('/categories/<slug>')
+def category(slug):
+    category = Categorie.query.get_or_404(slug)
+    return render_template('post.html',categories=[category])
+
 
 @main.route('/archives')
 def achieve_posts():
