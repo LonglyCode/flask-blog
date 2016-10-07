@@ -7,7 +7,7 @@ from flask.ext.admin import expose
 from ..models import Post, User, Category, Tag
 from ..decorators import admin_required
 from flask_admin.contrib.sqla import ModelView
-# from flask_admin.contrib.fileadmin import FileAdmin
+from flask_admin.contrib.fileadmin import FileAdmin
 from datetime import datetime
 from flask.ext.admin import Admin
 
@@ -110,10 +110,19 @@ class TagAdmin(ModelView):
         # redirect to login page if user doesn't have access
         return redirect(url_for('main.index', next=request.url))
 
+class MyFileAdmin(FileAdmin):
+
+    def is_accessible(self):
+        return current_user.is_administrator()
+
+    def inaccessible_callback(self, name, **kwargs):
+        # redirect to login page if user doesn't have access
+        return redirect(url_for('main.index', next=request.url))
+
 import os.path as op
-path = op.join(op.dirname(__file__), 'static')
+path = op.join(op.dirname(__file__), '../static')
 admin.add_view(PostAdmin(Post, db.session, name='文章'))
 admin.add_view(CategoryAdmin(Category, db.session, name='分类'))
 admin.add_view(UserAdmin(User, db.session, name='用户'))
 admin.add_view(TagAdmin(Tag, db.session, name='标签'))
-# admin.add_view(FileAdmin(path,'/static/'.name='文件'))
+admin.add_view(MyFileAdmin(path,'/static/',name='文件'))
