@@ -5,6 +5,7 @@ from flask.ext.moment import Moment
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from flask.ext.admin import Admin
+from flask.ext.debugtoolbar import DebugToolbarExtension
 from config import config
 
 bootstrap = Bootstrap()
@@ -12,10 +13,11 @@ mail = Mail()
 moment = Moment()
 db = SQLAlchemy()
 admin = Admin(name="Lonely Code",template_mode='bootstrap3')
-
+toolbar = DebugToolbarExtension()
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
+
 
 
 def create_app(config_name):
@@ -29,6 +31,7 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
     admin.init_app(app)
+    toolbar.init_app(app)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)

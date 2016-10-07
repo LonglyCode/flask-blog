@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from flask import flash, redirect, url_for, request
 from flask.ext.login import current_user, login_required
-from . import admin, db
+from app import admin, db
 from flask.ext.admin import expose
-from .models import Post, User, Category, Tag
-from .decorators import admin_required
-from flask.ext.admin.contrib.sqla import ModelView
-# from flask.ext.admin.contrib.fileadmin import FileAdmin
+from ..models import Post, User, Category, Tag
+from ..decorators import admin_required
+from flask_admin.contrib.sqla import ModelView
+# from flask_admin.contrib.fileadmin import FileAdmin
 from datetime import datetime
+from flask.ext.admin import Admin
 
 
-class PostAdimin(ModelView):
+class PostAdmin(ModelView):
 
     column_list = ('title','category','pub_time','published')
     column_searchable_list = ('title',)
@@ -47,7 +49,7 @@ class PostAdimin(ModelView):
         else:
             model.modified_time = datetime.now()
 
-class UserAdimin(ModelView):
+class UserAdmin(ModelView):
 
     column_list = ('email','username','role','confirmed')
     column_searchable_list = ('username','email')
@@ -71,7 +73,7 @@ class UserAdimin(ModelView):
         # redirect to login page if user doesn't have access
         return redirect(url_for('main.index', next=request.url))
 
-class CategoryAdimin(ModelView):
+class CategoryAdmin(ModelView):
 
     column_list = ('slug','name',)
     column_searchable_list = ('name',)
@@ -92,7 +94,7 @@ class CategoryAdimin(ModelView):
         slug=('URL SLUG'),
     )
 
-class TagAdimin(ModelView):
+class TagAdmin(ModelView):
 
     column_list = ('name',)
     column_searchable_list = ('name',)

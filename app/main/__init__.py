@@ -2,7 +2,7 @@ from flask import Blueprint
 
 main = Blueprint('main', __name__)
 
-from . import views, errors, sitemap
+from . import views, errors, sitemap, admins
 from ..models import Permission
 
 
