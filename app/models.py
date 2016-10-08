@@ -235,6 +235,22 @@ class Post(db.Model):
     def shortlink(self):
         return url_for('main.post', id=self.id)
 
+    @cached_property
+    def get_next(self):
+        try:
+           p = Post.query.get(self.id+1)
+        except Exception:
+           pass
+        return p
+
+    @cached_property
+    def get_prev(self):
+        try:
+            p = Post.query.get(self.id-1)
+        except Exception:
+           pass
+        return p
+
     @staticmethod
     def on_chang_body(target,value,oldvalue,initiator):
         target.body_html = markdown_render(value,codehilite=True)

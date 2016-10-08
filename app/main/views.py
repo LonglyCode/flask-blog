@@ -39,7 +39,7 @@ def post(id):
     post = Post.query.get_or_404(id)
     if not post.published:
         abort(403)
-    return render_template('post.html',posts=[post])
+    return render_template('post.html',post=post)
 
 
 @main.route('/categories/<slug>')
