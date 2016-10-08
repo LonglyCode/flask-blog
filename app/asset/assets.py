@@ -3,6 +3,7 @@ from flask.ext.assets import Environment, Bundle
 
 bundles ={
     'all_js': Bundle(
+        'js/jquery-2.1.4.min.js',
         'vendor/semantic/dist/semantic.min.js',
         filters='jsmin',
         output='js/all.min.js'),

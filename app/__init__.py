@@ -7,6 +7,7 @@ from flask.ext.login import LoginManager
 from flask.ext.admin import Admin
 from flask.ext.debugtoolbar import DebugToolbarExtension
 from config import config
+import asset
 
 bootstrap = Bootstrap()
 mail = Mail()
@@ -32,6 +33,7 @@ def create_app(config_name):
     login_manager.init_app(app)
     admin.init_app(app)
     toolbar.init_app(app)
+    asset.init_app(app)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
