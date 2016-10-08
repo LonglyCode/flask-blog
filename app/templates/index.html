@@ -1,28 +1,10 @@
 {% extends "base.html" %}
-{% import "wtf.html" as wtf %}
 
 {% block title %}Lonely Code{% endblock %}
 
 {% block page_content %}
-<div>
-    {% if current_user.can(Permission.WRITE_ARTICLES) %}
-    {{ wtf.quick_form(form) }}
-    {% endif %}
+
+<div class="ui raised segment posts">
+{% include "inside/posts.html" %}
 </div>
-<ul class="posts">
-    {% for p in posts %}
-    <li class="post">
-        <div class="post-date">
-            {{ moment(p.pub_time).fromNow()}}
-        </div>
-        <div class="post-body">
-            {% if p.body_html %}
-            {{ p.body_html|safe }}
-            {% else %}
-            {{ p.body|safe }}
-            {% endif %}
-        </div>
-    </li>
-    {% endfor %}
-</ul>
 {% endblock %}
