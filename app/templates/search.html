@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Lonely Code{% endblock %}
+
+{% block page_content %}
+
+<div class="ui raised segment posts">
+    <h2 class="ui head">搜{{query}}的结果,总共{{ results|count() }}条</h2>
+    <hr>
+{% for post in results %}
+{% include "inside/post.html" %}
+{% endfor %}
+</div>
+
+{% endblock %}

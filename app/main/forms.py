@@ -22,3 +22,6 @@ class PostForm(Form):
                                 get_label = lambda r:r.name)
     body = TextAreaField("input your post content",validators=[Required()])
     submit = SubmitField(u'确定')
+
+class SearchForm(Form):
+    search = StringField('Search',validators=[Required()])

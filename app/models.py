@@ -10,6 +10,7 @@ from jinja2.filters import do_striptags, do_truncate
 from .utils import markdown_render
 from werkzeug import cached_property
 from flask.ext.sqlalchemy import BaseQuery
+from jieba.analyse import ChineseAnalyzer
 
 class Todo(db.Model):
     __tablename__="testtodos"
@@ -201,12 +202,15 @@ class Tag(db.Model):
 db.event.listen(Tag.name, 'set', Tag.on_chang_body)
 
 class PostQuery(BaseQuery):
+
     def public(self):
         return self.filter_by(published=True)
 
 class Post(db.Model):
     __tablename__ = 'posts'
-    query_class = PostQuery
+    __search__=['body','title','slug']
+    __anlyzer__=ChineseAnalyzer()
+    # query_class = PostQuery
 
     id = db.Column(db.Integer,primary_key=True)
     slug = db.Column(db.String(200), nullable=False)

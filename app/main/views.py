@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from flask import render_template,redirect,url_for,abort
+from flask import render_template,redirect,url_for,abort,g
 from . import main
-from .forms import PostForm
+from .forms import PostForm,SearchForm
 from ..models import Permission,Post,Tag,Category
 from flask.ext.login import current_user
 from app import db
@@ -17,6 +17,22 @@ def change_tags(tags):
             tag_obj=Tag(name=tag)
         l.append(tag_obj)
     return l
+
+@main.before_app_request
+def before_request():
+    g.search_form = SearchForm()
+
+@main.route('/search',methods=['POST'])
+def search():
+    # if not g.search_form.validate_on_submit():
+        # return redirect(url_for('.index'))
+    return redirect(url_for('.search_results',query=g.search_form.search.data))
+
+@main.route('/search_results/<query>',methods=['GET','POST'])
+def search_results(query):
+    results = Post.query.whoosh_search(query)
+    # print "query_results is {}".format(query)
+    return render_template('search.html',query="zhege",results=results)
 
 @main.route('/',methods=['GET','POST'])
 def index():
@@ -35,7 +51,7 @@ def index():
     return render_template('index.html',form=form,posts=posts)
 
 
-@main.route('/post/<int:id>')
+@main.route('/post/<int:id>',methods=['GET','POST'])
 def post(id):
     post = Post.query.get_or_404(id)
     if not post.published:
@@ -43,19 +59,19 @@ def post(id):
     return render_template('post.html',post=post)
 
 
-@main.route('/categories/<name>')
+@main.route('/categories/<name>',methods=['GET','POST'])
 def category(name):
     category = Category.query.filter_by(name=name).first()
     return render_template('result.html',item=category)
 
 
-@main.route('/tags/<name>')
+@main.route('/tags/<name>',methods=['GET','POST'])
 def tag(name):
     tag = Tag.query.filter_by(name=name).first()
     return render_template('result.html',item=tag)
 
 
-@main.route('/archives')
+@main.route('/archives',methods=['GET','POST'])
 def achieve_posts():
     posts = Post.query.all()
     d=defaultdict(list)
@@ -64,7 +80,7 @@ def achieve_posts():
     return render_template('archives.html',d=d)
 
 
-@main.route('/categories')
+@main.route('/categories',methods=['GET','POST'])
 def categories_posts():
     posts = Post.query.all()
     d=defaultdict(list)
@@ -73,7 +89,7 @@ def categories_posts():
     return render_template('categories.html',d=d)
 
 
-@main.route('/tags')
+@main.route('/tags',methods=['GET','POST'])
 def tags_posts():
     tags = Tag.query.all()
     return render_template('tags.html',tags=tags)

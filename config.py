@@ -13,6 +13,7 @@ class Config:
     MAIL_SUBJECT_PREFIX = '[Lonely Code]'
     MAIL_SENDER = 'Lonely Code Admin <emoxun8215@126.com>'
     APP_ADMIN = 'emoxun8215@126.com'
+    WHOOSH_BASE = os.path.abspath(os.path.dirname(__file__))
 
     @staticmethod
     def init_app(app):

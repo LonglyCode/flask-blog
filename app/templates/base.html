@@ -41,7 +41,9 @@
                 <div class="item">
                     <div class="ui search">
                     <div class="ui left icon input">
-                        <input class="prompt" type="text" placeholder="搜索" name='keywords' id="keywords">
+                        <form  method="post" action="{{url_for('main.search')}}">
+                            <input class="prompt" type="text" type="Search" placeholder="搜索" name='keywords' id="keywords">
+                            </form>
                         <i class="search icon"></i>
                     </div>
                 </div>

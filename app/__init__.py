@@ -6,7 +6,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from flask.ext.admin import Admin
 from flask.ext.debugtoolbar import DebugToolbarExtension
-
+import flask_whooshalchemyplus
 from config import config
 import asset
 
@@ -35,6 +35,8 @@ def create_app(config_name):
     admin.init_app(app)
     toolbar.init_app(app)
     asset.init_app(app)
+    flask_whooshalchemyplus.init_app(app)
+    flask_whooshalchemyplus.index_all(app)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
