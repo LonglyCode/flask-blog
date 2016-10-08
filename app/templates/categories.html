@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %} Categories {% endblock %}
+
+{% block page_content %}
+<div class="ui stackable container">
+    <article class="ui padded segment">
+        <header class="row article-head">
+            <h1 class="font-kai">
+                分类
+            </h1>
+        </header>
+        <hr>
+        <div class="row article-body">
+        {% for key,value in d.items() %}
+            <h2 class="ui header">{{ key.name }}<sup>{{ value|count() }}</sup></h2>
+                <section class="eleven wide column">
+                    <div class="ui vertical segment">
+                    {% for p in value %}
+                        <div class="ui list ralaxed">
+                            <li class="item"><a href="{{ url_for('main.post',id=p.id) }}"><i class="browser icon"></i> {{ p.title }}</a></li>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </section>
+        {% endfor %}
+        </div>
+        </article>
+</div>
+{% endblock %}

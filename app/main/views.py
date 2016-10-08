@@ -34,6 +34,7 @@ def index():
     posts = Post.query.order_by(Post.pub_time.desc()).all()
     return render_template('index.html',form=form,posts=posts)
 
+
 @main.route('/post/<int:id>')
 def post(id):
     post = Post.query.get_or_404(id)
@@ -42,10 +43,16 @@ def post(id):
     return render_template('post.html',post=post)
 
 
-@main.route('/categories/<slug>')
-def category(slug):
-    category = Category.query.get_or_404(slug)
-    return render_template('post.html',categories=[category])
+@main.route('/categories/<name>')
+def category(name):
+    category = Category.query.filter_by(name=name).first()
+    return render_template('result.html',item=category)
+
+
+@main.route('/tags/<name>')
+def tag(name):
+    tag = Tag.query.filter_by(name=name).first()
+    return render_template('result.html',item=tag)
 
 
 @main.route('/archives')
@@ -55,3 +62,18 @@ def achieve_posts():
     for p in posts:
         d[p.pub_time.year].append(p)
     return render_template('archives.html',d=d)
+
+
+@main.route('/categories')
+def categories_posts():
+    posts = Post.query.all()
+    d=defaultdict(list)
+    for p in posts:
+        d[p.category].append(p)
+    return render_template('categories.html',d=d)
+
+
+@main.route('/tags')
+def tags_posts():
+    tags = Tag.query.all()
+    return render_template('tags.html',tags=tags)

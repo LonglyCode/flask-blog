@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %} Tags {% endblock %}
+
+{% block page_content %}
+<div class="ui stackable container">
+    <article class="ui padded segment">
+        <header class="row article-head">
+            <h1 class="font-kai">
+               标签
+            </h1>
+        </header>
+        <hr>
+        <div class="row article-body">
+        {% for t in tags %}
+            <h2 class="ui header">{{ t.name }}<sup>{{ t.posts|count() }}</sup></h2>
+                <section class="eleven wide column">
+                    <div class="ui vertical segment">
+                    {% for p in t.posts %}
+                        <div class="ui list ralaxed">
+                            <li class="item"><a href="{{ url_for('main.post',id=p.id) }}"><i class="tags icon"></i> {{ p.title }}</a></li>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </section>
+        {% endfor %}
+        </div>
+        </article>
+</div>
+{% endblock %}

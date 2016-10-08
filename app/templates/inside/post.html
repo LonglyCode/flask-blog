@@ -1,0 +1,28 @@
+<div class="ui vertical segment item">
+    <a class="ui red right ribbon label" href="{{ url_for('main.category', name=post.category.name) }}"><i class="icon"></i>{{ post.category.name}}</a>
+<div class="post-item">
+    <div class="header"><a href="{{ url_for('main.post', id=post.id, _external=True) }}"><h2>{{ post.title }}</h2></a></div>
+    <div class="label"> <span class="date">{{moment(post.pub_time).format("YYYY-MM-DD")}}</span></div>
+            <div class="ui dimmer">
+                <div class="content">
+                    <div class="center">
+                        <a href="{{ url_for('main.post', id=post.id, _external=True )}}"><div class="ui inverted button">查看详情</div></a>
+                    </div>
+                </div>
+            </div>
+    <div class="post-content">
+        <div class="description">
+            {{ post.summary }}
+        </div>
+    </div>
+    <div class="ui feed">
+        <div class="event">
+            <div class="left content">
+                {% for tag in post.tags %}
+                  <a class="tag-link" href="{{ url_for('main.tag', name=tag.name) }}" target="_blank"><i class="tag icon"></i>{{ tag.name}}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
