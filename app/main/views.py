@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from flask import render_template,redirect,url_for,abort,g
+from flask import render_template,redirect,url_for,abort,g,request
 from . import main
 from .forms import PostForm,SearchForm
 from ..models import Permission,Post,Tag,Category
-from flask.ext.login import current_user
+from flask_login import current_user
 from app import db
 from collections import defaultdict
 from ..utils import keywords_split
@@ -26,13 +26,16 @@ def before_request():
 def search():
     # if not g.search_form.validate_on_submit():
         # return redirect(url_for('.index'))
-    return redirect(url_for('.search_results',query=g.search_form.search.data))
+    a= request.form['search']
+    return redirect(url_for('.search_results',query=a))
 
-@main.route('/search_results/<query>',methods=['GET','POST'])
-def search_results(query):
-    results = Post.query.whoosh_search(query)
+@main.route('/search_results',methods=['GET','POST'])
+def search_results(**kw):
+    query=g.search_form.search.data
+    # import ipdb; ipdb.set_trace()
+    results = Post.query.whoosh_search(query).all()
     # print "query_results is {}".format(query)
-    return render_template('search.html',query="zhege",results=results)
+    return render_template('search.html',query=query,results=results)
 
 @main.route('/',methods=['GET','POST'])
 def index():

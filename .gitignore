@@ -40,3 +40,5 @@ nosetests.xml
 venv
 # migrate script
 migrations
+# index file
+*.toc

@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from flask import flash, redirect, url_for, request
-from flask.ext.login import current_user, login_required
+from flask_login import current_user, login_required
 from app import admin, db
-from flask.ext.admin import expose
+from flask_admin import expose
 from ..models import Post, User, Category, Tag
 from ..decorators import admin_required
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
 from datetime import datetime
-from flask.ext.admin import Admin
+from flask_admin import Admin
 
 
 class PostAdmin(ModelView):

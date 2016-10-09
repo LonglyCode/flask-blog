@@ -41,10 +41,14 @@
                 <div class="item">
                     <div class="ui search">
                     <div class="ui left icon input">
-                        <form  method="post" action="{{url_for('main.search')}}">
-                            <input class="prompt" type="text" type="Search" placeholder="搜索" name='keywords' id="keywords">
+                        <form style="display:inline"  method="post" action="{{url_for('main.search_results')}}" name="search">
+                            {{ g.search_form.hidden_tag() }}
+                            {{ g.search_form.csrf_token }}
+                            <div class="ui icon input">
+                            {{ g.search_form.search(class="prompt",size=20,placeholder="搜索") }}
+                            <i class="search icon"></i>
+                            </div>
                             </form>
-                        <i class="search icon"></i>
                     </div>
                 </div>
                 </div>

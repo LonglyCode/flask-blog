@@ -3,13 +3,13 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app,url_for
-from flask.ext.login import UserMixin, AnonymousUserMixin
+from flask_login import UserMixin, AnonymousUserMixin
 from . import db, login_manager
 from datetime import datetime
 from jinja2.filters import do_striptags, do_truncate
 from .utils import markdown_render
 from werkzeug import cached_property
-from flask.ext.sqlalchemy import BaseQuery
+from flask_sqlalchemy import BaseQuery
 from jieba.analyse import ChineseAnalyzer
 
 class Todo(db.Model):
@@ -208,8 +208,8 @@ class PostQuery(BaseQuery):
 
 class Post(db.Model):
     __tablename__ = 'posts'
-    __search__=['body','title','slug']
-    __anlyzer__=ChineseAnalyzer()
+    __searchable__= ['body','title','slug']
+    __analyzer__=ChineseAnalyzer()
     # query_class = PostQuery
 
     id = db.Column(db.Integer,primary_key=True)

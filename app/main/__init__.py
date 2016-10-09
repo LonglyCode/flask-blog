@@ -9,4 +9,4 @@ from forms import SearchForm
 
 @main.app_context_processor
 def inject_permissions():
-    return dict(Permission=Permission,SearchForm=SearchForm)
+    return dict(Permission=Permission,form=SearchForm())
