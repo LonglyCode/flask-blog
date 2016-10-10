@@ -10,6 +10,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
 from datetime import datetime
 from flask_admin import Admin
+from app.utils import markdown_render
 
 
 class PostAdmin(ModelView):
@@ -46,6 +47,7 @@ class PostAdmin(ModelView):
             model.author_id = current_user.id
             model.pub_time = datetime.now()
             model.modified_time = model.pub_time
+            model.body_html = markdown_render(model.body)
         else:
             model.modified_time = datetime.now()
 

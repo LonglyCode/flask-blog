@@ -40,6 +40,8 @@ def search_results(**kw):
 @main.route('/',methods=['GET','POST'])
 def index():
     form = PostForm()
+    g.tags = Tag.query.all()
+    g.categories = Category.query.all()
     if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
         post= Post(body=form.body.data,slug=form.data.slug,title=form.title.data,category=form.category.data,author=current_user._get_current_object())
 

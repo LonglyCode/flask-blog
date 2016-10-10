@@ -35,7 +35,10 @@ nosetests.xml
 
 # SQLite databases
 *.sqlite
-
+# TAGS
+TAGS
+# search index data
+search.db
 # Virtual environment
 venv
 # migrate script

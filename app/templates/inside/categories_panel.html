@@ -1,0 +1,19 @@
+<div class="ui segment">
+    <div class="ui pointing secondary menu section-title">
+        <div class="item active">归档</div>
+    </div>
+    <div class="ui labels">
+
+      <div class="ui relaxed divided animated list">
+              {% for category in g.categories %}
+            <div class="item">
+                <div class="ui icon">
+                    <i class="feed icon"></i>
+                    <a href="{{ url_for('main.category',name=category.name) }}" class="ui label">{{ category.name }} </a>
+                </div>
+            </div>
+              {% endfor %}
+
+      </div>
+    </div>
+</div>

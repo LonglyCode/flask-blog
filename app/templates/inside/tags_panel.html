@@ -1,0 +1,12 @@
+<div class="ui segment">
+    <div class="ui pointing secondary menu red section-title">
+        <div class="item"><i class="tags icon"></i>标签</div>
+    </div>
+    <div class="ui labels">
+
+      {% for tag in g.tags %}
+        <a href="{{ url_for('main.tag',name=tag.name) }}" class="ui label">{{ tag.name }}<sup>{{tag.posts|count()}}<sup></a>
+      {% endfor %}
+
+    </div>
+</div>
