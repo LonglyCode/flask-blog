@@ -11,6 +11,7 @@ from flask_admin.contrib.fileadmin import FileAdmin
 from datetime import datetime
 from flask_admin import Admin
 from app.utils import markdown_render
+from app.utils import pygmented_markdown
 
 
 class PostAdmin(ModelView):

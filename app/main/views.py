@@ -7,7 +7,7 @@ from ..models import Permission,Post,Tag,Category
 from flask_login import current_user
 from app import db
 from collections import defaultdict
-from ..utils import keywords_split
+from ..utils import keywords_split,pygments_style_defs
 
 def change_tags(tags):
     l = []
@@ -22,20 +22,15 @@ def change_tags(tags):
 def before_request():
     g.search_form = SearchForm()
 
-@main.route('/search',methods=['POST'])
-def search():
-    # if not g.search_form.validate_on_submit():
-        # return redirect(url_for('.index'))
-    a= request.form['search']
-    return redirect(url_for('.search_results',query=a))
-
 @main.route('/search_results',methods=['GET','POST'])
 def search_results(**kw):
     query=g.search_form.search.data
-    # import ipdb; ipdb.set_trace()
     results = Post.query.whoosh_search(query).all()
-    # print "query_results is {}".format(query)
     return render_template('search.html',query=query,results=results)
+
+@main.route('/pygments.css')
+def pygments_css():
+    return pygments_style_defs('monokai'),200,{'Content-Type':'text/css'}
 
 @main.route('/',methods=['GET','POST'])
 def index():
