@@ -13,8 +13,20 @@ from flask_admin import Admin
 from app.utils import markdown_render
 from app.utils import pygmented_markdown
 
+class Roled(object):
 
-class PostAdmin(ModelView):
+    can_create = True
+    can_edit = True
+    can_delete = True
+
+    def is_accessible(self):
+        return current_user.is_administrator()
+
+    def inaccessible_callback(self, name, **kwargs):
+        # redirect to login page if user doesn't have access
+        return redirect(url_for('main.index', next=request.url))
+
+class PostAdmin(Roled,ModelView):
 
     column_list = ('title','category','pub_time','published')
     column_searchable_list = ('title',)
@@ -31,17 +43,6 @@ class PostAdmin(ModelView):
         pub_time=('创建时间'),
     )
 
-    can_create = True
-    can_edit = True
-    can_delete = True
-
-    def is_accessible(self):
-        return current_user.is_administrator()
-
-    def inaccessible_callback(self, name, **kwargs):
-        # redirect to login page if user doesn't have access
-        return redirect(url_for('main.index', next=request.url))
-
     # Model handlers
     def on_model_change(self, form, model, is_created):
         if is_created:
@@ -52,7 +53,7 @@ class PostAdmin(ModelView):
         else:
             model.modified_time = datetime.now()
 
-class UserAdmin(ModelView):
+class UserAdmin(Roled,ModelView):
 
     column_list = ('email','username','role','confirmed')
     column_searchable_list = ('username','email')
@@ -65,53 +66,20 @@ class UserAdmin(ModelView):
         role=('角色'),
     )
 
-    can_create = True
-    can_edit = True
-    can_delete = True
-
-    def is_accessible(self):
-        return current_user.is_administrator()
-
-    def inaccessible_callback(self, name, **kwargs):
-        # redirect to login page if user doesn't have access
-        return redirect(url_for('main.index', next=request.url))
-
-class CategoryAdmin(ModelView):
+class CategoryAdmin(Roled,ModelView):
 
     column_list = ('slug','name',)
     column_searchable_list = ('name',)
-
-    can_create = True
-    can_edit = True
-    can_delete = True
-
-    def is_accessible(self):
-        return current_user.is_administrator()
-
-    def inaccessible_callback(self, name, **kwargs):
-        # redirect to login page if user doesn't have access
-        return redirect(url_for('main.index', next=request.url))
 
     column_labels = dict(
         name=('名字'),
         slug=('URL SLUG'),
     )
 
-class TagAdmin(ModelView):
+class TagAdmin(Roled,ModelView):
 
     column_list = ('name',)
     column_searchable_list = ('name',)
-
-    can_create = True
-    can_edit = True
-    can_delete = True
-
-    def is_accessible(self):
-        return current_user.is_administrator()
-
-    def inaccessible_callback(self, name, **kwargs):
-        # redirect to login page if user doesn't have access
-        return redirect(url_for('main.index', next=request.url))
 
 class MyFileAdmin(FileAdmin):
 
