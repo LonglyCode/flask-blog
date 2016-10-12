@@ -3,60 +3,84 @@
 {% block title %}{{ post.title}}{% endblock title %}
 {% block page_content %}
 <div class="ui container stackable grid">
-          <div class="articles eleven wide column">
-              <div class="ui segment">
+    <div class="articles eleven wide column">
+        <div class="ui segment">
 
-                  <a class="ui red right ribbon label" href="{{ url_for('main.category', slug=post.category.slug) }}" target="_blank"><i class="{{ post.category.icon }} icon"></i>{{ post.category.name}}</a>
-                  <div class="post">
-              <div class="header"><a href="{{ post.link }}"><h1>{{ post.title }}</h1></a></div>
-              <div class="ui feed">
-                  <div class="event">
-                      <div class="content">
-                          <span class="date">{{moment(post.pub_time).fromNow()}}</span>
-                          {% for tag in post.tags %}
-                          <span class="category date"><i class="tag icon"></i>{{ tag.name }}</span>
-                          {% endfor %}
-                      </div>
-                  </div>
-              </div>
-              <div class="post-content">
-                  {{ post.body_html | safe }}
-                  <div class="ui divider"></div>
-                  <div class="nearby">
-                    {% if post.get_prev %}
-                      <div class="ui animated basic button teal" data-content="{{ post.get_prev.title }}" data-variation="wide">
-                          <div class="visible content">上一篇</div>
-                          <a href="{{ post.get_prev.link }}"><div class="hidden content">
-                              <i class="left arrow icon"></i>
-                          </div></a>
-                      </div>
-                    {% endif %}
+            <a class="ui red right ribbon label" href="{{ url_for('main.category', name=post.category.name) }}" target="_blank"><i class="{{ post.category.icon }} icon"></i>{{ post.category.name}}</a>
+            <div class="post">
+                <div class="header"><a href="{{ post.link }}"><h1>{{ post.title }}</h1></a></div>
+                <div class="post-content">
+                    {{ post.body_html | safe }}
+                    <div class="ui divider"></div>
+                    <div class="nearby">
+                        {% if post.get_prev %}
+                        <div class="ui animated basic button teal" data-content="{{ post.get_prev.title }}" data-variation="wide">
+                            <div class="visible content">上一篇</div>
+                            <a href="{{ post.get_prev.link }}"><div class="hidden content">
+                                <i class="left arrow icon"></i>
+                            </div></a>
+                        </div>
+                        {% endif %}
 
-                    {% if post.get_next %}
-                      <div class="ui animated basic button teal" data-content="{{ post.get_next.title }}" data-variation="wide">
-                          <div class="visible content">下一篇</div>
-                          <a href="{{ post.get_next.link }}"><div class="hidden content">
-                              <i class="right arrow icon"></i>
-                          </div></a>
-                      </div>
-                    {% endif %}
+                        {% if post.get_next %}
+                        <div class="ui animated basic button teal" data-content="{{ post.get_next.title }}" data-variation="wide">
+                            <div class="visible content">下一篇</div>
+                            <a href="{{ post.get_next.link }}"><div class="hidden content">
+                                <i class="right arrow icon"></i>
+                            </div></a>
+                        </div>
+                        {% endif %}
 
-                      <div class="share-post ui button teal icon basic">
-                          <i class="share alternate icon"></i>
-                      </div>
-                      <div class="ui popup">
-                          <div class='bdsharebuttonbox bdshare-button-style1-24' data-bd-bind='1444833783821'>
-                              <a href='#' class='item bds_qzone' data-cmd='qzone' title='分享到QQ空间'></a>
-                              <a href='#' class='item bds_tsina' data-cmd='tsina' title='分享到新浪微博'></a>
-                              <a href='#' class='item bds_tqq' data-cmd='tqq' title='分享到腾讯微博'></a>
-                              <a href='#' class='item bds_renren' data-cmd='renren' title='分享到人人网'></a>
-                              <a href='#' class='item bds_weixin' data-cmd='weixin' title='分享到微信'></a>
-                          </div>
-                      </div>
+                        <div class="share-post ui button teal icon basic">
+                            <i class="share alternate icon"></i>
+                        </div>
+                        <div class="ui popup">
+                            <div class='bdsharebuttonbox bdshare-button-style1-24' data-bd-bind='1444833783821'>
+                                <a href='#' class='item bds_qzone' data-cmd='qzone' title='分享到QQ空间'></a>
+                                <a href='#' class='item bds_tsina' data-cmd='tsina' title='分享到新浪微博'></a>
+                                <a href='#' class='item bds_tqq' data-cmd='tqq' title='分享到腾讯微博'></a>
+                                <a href='#' class='item bds_renren' data-cmd='renren' title='分享到人人网'></a>
+                                <a href='#' class='item bds_weixin' data-cmd='weixin' title='分享到微信'></a>
+                            </div>
+                        </div>
 
-                  </div>
-              </div>
-          </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+    </div>
+    <aside class="five wide column">
+        <div class="ui segment">
+            <div class="ui pointing secondary menu section-title">
+                <div class="item">文章信息</div>
+            </div>
+
+            <div class="ui small header">
+                <date class="date">{{moment(post.pub_time).fromNow()}}</date>
+            </div>
+            <div class="ui small header">
+                <div class="tags">Tags</div>
+            </div>
+            <div class="ui labels">
+                <div class="ui relaxed divided animated list">
+                        <div class="item">
+                        {% for tag in post.tags %}
+                    <a href="{{ url_for('main.tag',name=tag.name) }}" class="ui label">{{ tag.name }}<sup>{{tag.posts|count()}}<sup></a>
+                        {% endfor %}
+                        </div>
+                </div>
+            </div>
+            <div class="ui small header">
+                <div class="category">Category</div>
+            </div>
+            <div class="ui labels">
+                <div class="ui icon">
+                    <i class="feed icon"></i>
+                    <a href="{{ url_for('main.category',name=post.category.name) }}" class="ui label">{{ post.category.name }} </a>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>
+
 {% endblock page_content %}
