@@ -30,7 +30,7 @@ def sitemap_xml():
             priority=0.8,
         ))
 
-    posts= Post.query.public().all()
+    posts= Post.query.all()
 
     for post in posts:
         url = post.link

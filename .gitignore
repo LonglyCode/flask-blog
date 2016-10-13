@@ -45,3 +45,5 @@ venv
 migrations
 # index file
 *.toc
+# static file
+vendor

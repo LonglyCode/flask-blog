@@ -9,7 +9,7 @@ bundles ={
         output='js/all.min.js'),
 
     'all_css': Bundle(
-        'vendor/semantic/dist/semantic.css',
+        'vendor/semantic/dist/semantic.min.css',
         filters='cssmin',
         output='css/all.min.css'),
 }

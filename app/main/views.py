@@ -8,6 +8,7 @@ from flask_login import current_user
 from app import db
 from collections import defaultdict
 from ..utils import keywords_split,pygments_style_defs
+from werkzeug.contrib.atom import AtomFeed, FeedEntry
 
 def change_tags(tags):
     l = []
@@ -93,3 +94,26 @@ def categories_posts():
 def tags_posts():
     tags = Tag.query.all()
     return render_template('tags.html',tags=tags)
+
+@main.route('/feed/')
+def feed():
+    site_name = 'Lonely Code'
+
+    feed = AtomFeed(
+        "%s Recent" % site_name,
+        feed_url=request.url,
+        url=request.url_root,
+    )
+
+    posts = Post.query.order_by(Post.pub_time.desc()).limit(15).all()
+
+    for post in posts:
+        feed.add(post.title,
+                 url=post.link,
+                 content_type='html',
+                 content=post.body_html,
+                 updated=post.modified_time,
+                 published=post.pub_time,
+                 author=post.author.username,
+                 summary=post.summary or '')
+    return feed.get_response()
