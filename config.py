@@ -14,6 +14,7 @@ class Config:
     MAIL_SENDER = 'Lonely Code Admin <emoxun8215@126.com>'
     APP_ADMIN = 'emoxun8215@126.com'
     WHOOSH_BASE = os.path.join(basedir,'search.db')
+    POSTS_PER_PAGE = 3
 
     @staticmethod
     def init_app(app):

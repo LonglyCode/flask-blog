@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import render_template,redirect,url_for,abort,g,request
+from flask import render_template,redirect,url_for,abort,g,request,current_app
 from . import main
 from .forms import PostForm,SearchForm
 from ..models import Permission,Post,Tag,Category
@@ -33,8 +33,8 @@ def search_results(**kw):
 def pygments_css():
     return pygments_style_defs('monokai'),200,{'Content-Type':'text/css'}
 
-@main.route('/',methods=['GET','POST'])
-def index():
+@main.route('/index/<int:page>',methods=['GET','POST'])
+def index(page):
     form = PostForm()
     g.tags = Tag.query.all()
     g.categories = Category.query.all()
@@ -47,8 +47,8 @@ def index():
                 post.tags.append(t)
 
         db.session.add(post)
-        return redirect(url_for('.index'))
-    posts = Post.query.order_by(Post.pub_time.desc()).all()
+        return redirect(url_for('.index',page))
+    posts = Post.query.order_by(Post.pub_time.desc()).paginate(page,current_app.config['POSTS_PER_PAGE'],False)
     return render_template('index.html',form=form,posts=posts)
 
 
