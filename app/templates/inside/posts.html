@@ -2,11 +2,11 @@
 {% include "inside/post.html" %}
 {% endfor %}
 <div class="ui pagination menu">
-    {% if posts.has_prev %}
-    <a class="item" href="{{url_for('main.index',page=posts.prev_num)}}"> <<前一页</a>
+    {% for i in range(1,posts.pages+1) %}
+    {% if i==posts.page %}
+    <a class="active item" href="">{{ posts.page }}</a>
+    {% else %}
+    <a class="item" href="{{ url_for('main.index',page=i)}}">{{ i }}</a>
     {% endif %}
-    <!-- <a class="active item" href=""> {{ request.args.get('page') }}</a> -->
-    {% if posts.has_next %}
-    <a class="item" href="{{url_for('main.index',page=posts.next_num)}}"> 后一页>></a>
-    {% endif %}
+    {% endfor %}
 </div>
