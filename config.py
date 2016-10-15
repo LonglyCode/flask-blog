@@ -15,6 +15,7 @@ class Config:
     APP_ADMIN = 'emoxun8215@126.com'
     WHOOSH_BASE = os.path.join(basedir,'search.db')
     POSTS_PER_PAGE = 5
+    CONTENT_PATH =os.path.join(basedir,'PostDir')
 
     @staticmethod
     def init_app(app):

@@ -12,6 +12,8 @@ from werkzeug import cached_property
 from flask_sqlalchemy import BaseQuery
 from jieba.analyse import ChineseAnalyzer
 
+__all__=['Todo','Permission','Post','User','Role','Tag','Category']
+
 class Todo(db.Model):
     __tablename__="testtodos"
     id = db.Column(db.Integer, primary_key=True)
