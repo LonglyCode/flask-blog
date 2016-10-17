@@ -36,6 +36,7 @@ def search_results(**kw):
 def pygments_css():
     return pygments_style_defs('monokai'),200,{'Content-Type':'text/css'}
 
+@main.route('/<int:page>',methods=['GET','POST'])
 @main.route('/index/<int:page>',methods=['GET','POST'])
 def index(page):
     form = PostForm()

@@ -47,3 +47,5 @@ migrations
 *.toc
 # static file
 vendor
+# markdown file filter
+*.md

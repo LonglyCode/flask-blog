@@ -1,0 +1,150 @@
+title: Org-mode个人总结
+category: Program
+tags: [emacs]
+---
+<!-- toc -->
+
+> 这是一份个人总结，并不能带你入门，我也曾尝试些一个教程，但不自信比这个中文教程好：[Org-mode 简明手册](http://www.cnblogs.com/Open_Source/archive/2011/07/17/2108747.html)，翻译官方的 [mini manual](http://orgmode.org/manual)，有个最佳实践 [organize your life plain text](http://doc.norang.ca/org-mode.html)。Org 用来做 GTD 是极好的，它的绝对优势就是完全是纯文本的，所有的格式状态都是由一些符号和特殊字符组成，不依赖于任何的数据库，而且可自定义的东西太多，因为是纯文本的，许多格式定义可以都涉及到一些程序通用的表达式，对于程序猿是非常友好的，但对于普通人需要一定的学习成本。本文提炼了Org常用的功能和设置，作为备忘记录。
+
+<!--more-->
+## 强调
+
+强调基本和其他的富文本的格式相同，有时会忘记，先记下：
+
+    *粗体*
+    /斜体/
+    +删除线+
+    _下划线_
+    下标：H_2 O(这里必须留一个空格要不然 2 和 O 都成为小标，目前还不知道怎么去掉空格)
+    上标：E=mc^2
+    等宽字：  =git=
+
+## 视图
+
+### 稀疏疏
+
+主要是针对本文件
+
+|按键 |说明 |
+|-----|------|
+|C-c / |稀疏树的创建命令 |
+|C-c / r |其中一项，会提示输入匹配串，所有的匹配项都会高亮 |
+
+### 议程视图
+
+> 调用命令：M-x org-agenda，然后会有提示执行对应的命令
+
+1. 周/日议程
+2. 全局 TODO 列表
+3. 匹配标签和属性
+4. 单文件的时间轴
+5. 查找视图
+
+## 转移
+
+### 归档
+
+> 命令:M-x org-achive-x，可以为 subtree,file 甚至 agenda 等等
+当一个条目完成时想从当前项目去除的时候，可以定制归档地址
+
+### 转送笔记
+
+> 命令:M-x org-refile，refille 可以顾名思义，重新定义当前条目的 file 归属
+一个条目转移到另外一个工程里面时可以用到 转送 ，同样可以定义转送目标地址
+
+### 捕捉
+
+> M-x org-capture
+在编辑过程中突然冒出一个想法，可以用这个中断当前的工作，可以通过自定义模板定义分类和地址
+
+### 时间戳
+
+时间戳是一个具有特定格式的日期，可以出现在树条目的标题和正文的任何地方。
+
+1. 最简单的：时间+时间
+2. 时间按规律重复：N 天（d）、周（w）、月（m）、年（y），会在时间点后面加个尾巴，称作中继器，比如：
+`<2015-07-29 周三 +1w>`
+
+    注意看后面的+1w，代表每个周（w）都要重复，直到`<2015-07-29 周三>`为止，在 weekly agenda 里面查看时候会一直有这一项
+
+3. 时间/日期段 连续输入时间戳的时候自动生成一个时间段 `<2015-07-29 周三>–<2015-09-01 周二>`
+4. 非激活的时间戳 跟普通的时间一样，只不过它不被激活，即不会出现在议程当中 关于时间戳的快捷键：
+
+|快捷键|描述|
+|-----|------|
+|C-c .|	创建时间，如果连续使用则会自动将两个时间连接成时间段|
+|C-c !|未激活的时间戳|
+|S-left/right|改变时间戳的一天|
+|S-UP/DOWN|	将光标置于时间戳的年月日之上，则修改相应时间|
+
+|快捷键|描述|
+|-----|------|
+|C-c C-d|在标题下面插入”DEADLINE”关键字的时间戳|
+|C-c C-s|同上，为”SCHEDULED”|
+
+|快捷键|描述|
+|-----|------|
+|C-c C-x C-！|开始计时（CLOCK-IN), 加 C-u 前缀，从当前计时的任务当中选择任务？|
+|C-c C-x C-o|停止计时（CLOCK-OUT),会计算时间在时间段后面插入|
+|C-c C-x C-e|为当前计时任务更新进度|
+|C-c C-x C-x|取消计时|
+|C-c C-x C-j|跳转到当前计时的任务条目|
+|C-c C-x C-r|插入 org 表格统计计时报告|
+|C-c C-c|如果有上面的计时报告则更新它，需要置于首行，即#+BEGIN:|
+
+## 常用的可以自定义的函数或者变量
+
+1. org-startup-folded，设置为 t 默认打开文件的时候自动展开折叠
+2. org-log-into-drawer 和 org-todo-keywords 前者可以跟踪 TODO 条目状态变化
+WAIT(w@/!) 注意看括号里面，w 代表改成 WAIT 状态时候的快捷键，”!”代表转变状态的时候会做一个时间戳，”@”代表做一个一个记录。 所以改为 DONE 的时候会有时间戳，CANCELED 会有一个记录 后者则定义除了 TODO 和 DONE 外的状态：
+```lisp
+(setq org-todo-keywords
+ '((sequence "TODO(t)" "|" "DONE(d)")
+   (sequence "REPORT(r!)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
+   (sequence "|" "CANCELED(c@)")))
+```
+    其中用”|”来分割不同的状态，同样可以使用”!”和”@”语法，上面的转变成 REPORT 会有时间戳在条目下面
+
+3. org-tag-alist 指定 tag 值免得每次都要重新输入一大堆的东西，此为 alist，可以用相关的 list 函数添加:
+   其中?w 就代表字母 w,当你改变或者新增 tag 的关键字，按下 w 则，会输入”@work”的 tag
+```lisp
+(setq org-tag-alist '(("@work" . ?w) ("@home" . ?h) ("laptop" . ?l)))
+```
+
+4. org-tags-match-list-sublevels 用于定义议程文件匹配的标签一个全局列表
+5. org-refile-targets 设置转送笔记的目标地址
+6. org-archivelocation 设置归档位置
+7. org-agenda-files 设置议程文件
+8. org-capture-templates 设置捕获模板
+```lisp
+(setq org-capture-templates
+'(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
+   "* TODO %?\n %i\n %a")
+  ("j" "Journal" entry (file+datetree "~/org/journal.org")
+   "* %?\nEntered on %U\n %i\n %a")))
+```
+    定义两个模板
+
+9. org-agenda-custom-commands 自定义议程视图搜索
+```lisp
+(setq org-agenda-custom-commands
+'(("w" todo "WAITING")
+  ("u" tags "+boss-urgent")
+  ("v" tags-todo "+boss-urgent")))
+```
+    第一项为关键字，可以选择范围 tags 或 todo 项，最后为搜索关键字 搜索字符串可以使用 ‘&’ 作与运算， ‘|’ 作或运算。‘&’ 的约束力比 ‘|’ 的强
+
+10. org-startup-indented 缩进相关
+11. org-structure-template-alist 定义元数据的模板，下面为默认模板:
+```lisp
+("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE" "<example>\n?\n</example>")
+```
+    其中”e”代表你<e 时候会自动补全接下的内容，最后也可以看出元数据其实是定义了一些 html 节点，其中”?”为内容的占位符。
+
+12. (setq org-agenda-start-day “+2d”)可以显示未来两天的议程。
+13. org-todo-keyword-faces 可以定义 TODO 状态的颜色显示各种显示等
+```lisp
+(setq org-todo-keyword-faces
+      '(("TODO" . org-warning)("STARTED" . "black")
+      ("CANCELED" . (:foreground "yellow" :weight bold))))
+```
