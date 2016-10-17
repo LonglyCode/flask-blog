@@ -16,8 +16,11 @@ def change_tags(tags):
         tag_obj = Tag.query.filter_by(name=tag).first()
         if tag_obj is None:
             tag_obj=Tag(name=tag)
+            db.session.add(tag_obj)
+            db.session.commit()
         l.append(tag_obj)
     return l
+
 
 @main.before_app_request
 def before_request():

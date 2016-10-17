@@ -39,7 +39,8 @@ def markdown_render(text,codehilite=True):
     ]
 
     if codehilite:
-        exts.append('codehilite(guess_lang=True,linenums=True)')
+        # exts.append('codehilite(guess_lang=True,linenums=True)')
+        exts.append('codehilite(guess_lang=True)')
 
     return Markup(markdown.markdown(
         text,

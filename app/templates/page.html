@@ -3,7 +3,7 @@
 {% block title %}{{ post.title}}{% endblock title %}
 {% block page_content %}
 <div class="ui container stackable grid">
-    <div class="articles eleven wide column">
+    <div class="articles twelve wide column">
         <div class="ui segment">
 
             <a class="ui red right ribbon label" href="{{ url_for('main.category', name=post.category.name) }}" target="_blank"><i class="{{ post.category.icon }} icon"></i>{{ post.category.name}}</a>
@@ -30,7 +30,7 @@
             </div>
         </div>
     </div>
-    <aside class="five wide column">
+    <aside class="four wide column">
         <div class="ui segment">
             <div class="ui pointing secondary menu section-title">
                 <div class="item">文章信息</div>

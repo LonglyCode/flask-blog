@@ -10,8 +10,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
 from datetime import datetime
 from flask_admin import Admin
-from app.utils import markdown_render
-from app.utils import pygmented_markdown
+from app.utils import markdown_render,pygmented_markdown
 
 class Roled(object):
 
@@ -24,7 +23,7 @@ class Roled(object):
 
     def inaccessible_callback(self, name, **kwargs):
         # redirect to login page if user doesn't have access
-        return redirect(url_for('main.index', next=request.url))
+        return redirect(url_for('main.index', page=1))
 
 class PostAdmin(Roled,ModelView):
 
@@ -45,11 +44,11 @@ class PostAdmin(Roled,ModelView):
 
     # Model handlers
     def on_model_change(self, form, model, is_created):
+        model.body_html = markdown_render(model.body,codehilite=True)
         if is_created:
             model.author_id = current_user.id
             model.pub_time = datetime.now()
             model.modified_time = model.pub_time
-            model.body_html = markdown_render(model.body)
         else:
             model.modified_time = datetime.now()
 
