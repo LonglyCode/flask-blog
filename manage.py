@@ -13,7 +13,7 @@ from app.Watch import FileWatch
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
-filewatch = FileWatch(app)
+#filewatch = FileWatch(app)
 
 whoosh_index(app,Post)
 

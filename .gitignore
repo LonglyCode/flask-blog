@@ -45,6 +45,11 @@ venv
 migrations
 # index file
 *.toc
+# exclude main css and js file 
+!semantic.css
+!semantic.js
+!semantic.min.css
+!semantic.min.js
 # static file
 vendor
 # markdown file filter
