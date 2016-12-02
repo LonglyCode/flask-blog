@@ -1,22 +1,25 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from datetime import datetime
+
 from flask import flash, redirect, url_for, request
-from flask_login import current_user, login_required
 from app import admin, db
+from app.models import Post, User, Category, Tag
+from app.decorators import admin_required
+from app.utils import markdown_render,pygmented_markdown
+
+from flask_login import current_user, login_required
 from flask_admin import expose
-from ..models import Post, User, Category, Tag
-from ..decorators import admin_required
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
-from datetime import datetime
-from flask_admin import Admin
-from app.utils import markdown_render,pygmented_markdown
+from flask_admin.form import SecureForm
 
 class Roled(object):
 
     can_create = True
     can_edit = True
     can_delete = True
+    from_base_class = SecureForm
 
     def is_accessible(self):
         return current_user.is_administrator()
