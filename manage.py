@@ -17,6 +17,15 @@ migrate = Migrate(app, db)
 
 whoosh_index(app,Post)
 
+@app.template_filter()
+def format_time(s):
+    if "|" in s:
+        l = str(s).split("|")
+        l[0] = l[0] + "年"
+        l[1] = l[1] + "月"
+        return ''.join(l)
+    return s
+
 def make_shell_context():
     return dict(app=app, db=db, User=User, Role=Role, Permission=Permission,Todo=Todo,Category=Category,Post=Post)
 

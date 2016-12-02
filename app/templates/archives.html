@@ -12,7 +12,7 @@
         <hr>
         <div class="row article-body">
         {% for key,value in d.items() %}
-            <h2 class="ui header">{{ key }}</h2>
+            <h2 class="ui header">{{ key|format_time() }}</h2>
                 <section class="eleven wide column">
                     <div class="ui vertical segment">
                     {% for p in value %}
