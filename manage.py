@@ -7,14 +7,14 @@ from app.models import User,Role,Permission,Todo,Category,Post
 from flask_script import Manager, Shell, Server
 from flask_migrate import Migrate, MigrateCommand
 from flask_whooshalchemyplus import whoosh_index
-from app.Watch import FileWatch
+import app.Watch as FileWatch
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
-#filewatch = FileWatch(app)
 
+FileWatch.init_app(app)
 whoosh_index(app,Post)
 
 @app.template_filter()

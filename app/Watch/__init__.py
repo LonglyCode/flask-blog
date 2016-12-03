@@ -1,1 +1,1 @@
-from .file_watch import FileWatch
+from .file_watch import init_app
