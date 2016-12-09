@@ -371,10 +371,67 @@ class Post(db.Model):
     ......
 ```
 值得注意的是，把jieba引入过后最好把原来的索引生成的文件夹删除，重新生成索引。
-## 提供订阅功能
+### 全局搜索
+我的想法是将搜索框置于导航栏上，全局可见。首先要求所有的ViewFunction 必须是都是接收`POST`方法的。即`@app.route('/someurl/',methods=['GET','POST'])`都要包含POST。
+将搜索表单实例赋给`g`全局对象的某个属性，让它全局可见，而且用钩子函数在一个请求被处理之前先获取搜索框的内容。
 
-### feed
+``` python
+# 定义表单
+class SearchForm(Form):
+    search = StringField('Search',validators=[Required()])
 
+# 在请求发生前把表单赋给g
+@main.before_app_request
+def before_request():
+    g.search_form = SearchForm()
+
+# 接收搜索结果的视图函数
+@main.route('/search_results',methods=['GET','POST'])
+def search_results(**kw):
+    query=g.search_form.search.data # 这里获取搜索框的内容
+    results = Post.query.whoosh_search(query).all()
+    return render_template('search.html',query=query,results=results)
+```
+
+最后在前端编写一个表单，如下:
+``` html
+<form style="display:inline" method="post" action="{{url_for('main.search_results')}}" name="search">
+                  {{ g.search_form.hidden_tag() }} {{ g.search_form.csrf_token }}
+                  <div class="input">
+                    {{ g.search_form.search(class="prompt",size=20,placeholder="搜索") }}
+                  </div>
+</form>
+```
+
+## 提供订阅功能(Feed)
+订阅功能和网站地图原理基本一样，返回一个XML文件给别人的订阅或者抓取，同样地需要遵守固有的形式，再将具体的网站添加进去即可。有幸的是，`werkzeug`这个库有封装了订阅的格式，把信息传进去就行了。
+
+``` python
+from werkzeug.contrib.atom import AtomFeed
+# 访问feed就能获取xml
+@main.route('/feed/')
+def feed():
+    site_name = 'Lonely Code'
+
+    feed = AtomFeed(
+        "%s Recent" % site_name,
+        feed_url=request.url,
+        url=request.url_root,
+    )
+
+    posts = Post.query.order_by(Post.pub_time.desc()).limit(15).all()
+
+    for post in posts:
+        feed.add(post.title,
+                 url=post.link,
+                 content_type='html',
+                 content=post.body_html,
+                 updated=post.modified_time,
+                 published=post.pub_time,
+                 author=post.author.username,
+                 summary=post.summary or '')
+    return feed.get_response()
+```
 ## 博客分页功能
 
 ### paginate
@@ -406,4 +463,3 @@ class Post(db.Model):
 ### 网站流量分析
 
 ### 本地到远程部署
-
