@@ -331,14 +331,46 @@ class PostAdmin(ModelView):
 
     # 指定当没有权限时会返回到哪个界面
     def inaccessible_callback(self, name, **kwargs):
-        return redirect(url_for('main.index', page=1))
+        return redirect(url_for('main.index', page=1)'
 ```
 
 ## 静态文件管理
+后台的静态文件，css和js文件太多之后，就需要管理的起来，最好能全部压缩到单独的文件里面最好了。`flask-asset`就是用于此的，其中两个概念最重要`Environment`和`Bundle`后者会生成返回文件实例，前者需要传入flask实例生成前端的环境，并且把`Bundle`实例注册到`Environment`实例当中，前端的环境就能引用`Bundle`引入的文件实例了。最好新建一个单独python文件。
+``` python
 
-### asset
+from flask_assets import Bundle, Environment
+from webassets.filter import get_filter
 
-### flask-asset
+# 用字典接收多个实例
+# 其中filters是分别有jsmin和cssmin，需要使用pip来安装
+# output 是输出文件位置，相对与static 文件夹而言
+bundles ={
+    'all_js': Bundle(
+        'js/jquery-2.1.4.min.js',
+        'vendor/semantic/dist/semantic.min.js',
+        filters='jsmin',
+        output='js/all.min.js'),
+
+    'all_css': Bundle(
+        'vendor/semantic/dist/semantic.min.css',
+        filters='cssmin',
+        output='css/all.min.css'),
+}
+def init_app(app):
+    webassets =Environment(app)
+    webassets.register(bundles)
+```
+最后自然就是在前端里引入。
+
+``` html
+{% assets "all_css" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}"> 
+{% endassets %} 
+
+{% assets "all_js" %}
+      <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+```
 
 ## 全文搜索
 可以看到本博客尽量用python本身来实现除前端外的所有功能，不想引入谷歌搜索或者使用其他语言实现的全文索引引擎，`whoosh`是纯python 实现的全文索引，又因为要涉及到中文，所以肯定还要结合`jieba`分词，还好这两者结合非常好，最终搜索中文的效果也非常不错。
