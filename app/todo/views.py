@@ -1,8 +1,11 @@
-from flask import render_template, redirect, request, url_for, flash, jsonify
+from datetime import datetime
+
+from flask import flash, jsonify, redirect, render_template, request, url_for
+
 from . import todo
 from .. import db
 from ..models import Todo
-from datetime import datetime
+
 
 @todo.route('/')
 def index():

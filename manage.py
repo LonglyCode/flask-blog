@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import os
-from app import create_app, db
-from app.models import User,Role,Permission,Todo,Category,Post
-from flask_script import Manager, Shell, Server
-from flask_migrate import Migrate, MigrateCommand
-from flask_whooshalchemyplus import whoosh_index
-import app.Watch as FileWatch
 
+from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager, Server, Shell
+from flask_whooshalchemyplus import whoosh_index
+
+import app.Watch as FileWatch
+from app import create_app, db
+from app.models import Category, Permission, Post, Role, Todo, User
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)

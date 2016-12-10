@@ -1,5 +1,5 @@
+from flask_assets import Bundle, Environment
 from webassets.filter import get_filter
-from flask_assets import Environment, Bundle
 
 bundles ={
     'all_js': Bundle(

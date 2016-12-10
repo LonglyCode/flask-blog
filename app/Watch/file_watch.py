@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+import codecs
+import re
+from os.path import basename, splitext
+
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
-from os.path import splitext,basename
+
 from app import db
-from ..models import Post,Tag,Category,User
+
+from ..models import Category, Post, Tag, User
 from ..utils import keywords_split
-import re
-import codecs
 
 __all__=['FileWatch']
 pattern = re.compile(r'(?P<title>title.*\n)(?P<category>category.*\n)(?P<tags>tags.*\n)')

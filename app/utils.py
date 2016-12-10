@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 import markdown
 from flask import Markup
 from pygments.formatters.html import HtmlFormatter
+
 
 # def force_unicode(value, encoding='utf-8', errors='strict'):
 #     """

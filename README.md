@@ -433,8 +433,28 @@ def feed():
     return feed.get_response()
 ```
 ## 博客分页功能
+实际上如果使用了`flask_sqlachemy`里面已经实现了分页的功能，在任意返回的`query`后面接个paginate 方法会返回一个Pagination对象，此对象包含了查询返回的所有对象`items`，当前页`page`,所有页数`pages`，是否还有上一页`has_prev`，是否还有下一页`has_next`等属性。记得在视图函数传入的参数必须是`page`才能正确的识别。
+``` python
+# paginate 接收三个参数，分别为当前的页数，每页有多少个item，当找不到的当前页的时候是否要选择抛出404错误。
+    posts = Post.query.order_by(Post.pub_time.desc()).paginate(page,10,False)
+```
+前端写一个关于页数的循环即可。
+``` html
 
-### paginate
+{% for post in posts.items %}
+{% include "inside/post.html" %}
+{% endfor %}
+<!-- 针对所有页数循环，取出当前页并设为活动按钮，其他页则以链接按钮的形式铺张开。 -->
+<div class="ui pagination menu">
+    {% for i in range(1,posts.pages+1) %}
+    {% if i==posts.page %}
+    <a class="active item" href="">{{ posts.page }}</a>
+    {% else %}
+    <a class="item" href="{{ url_for('main.index',page=i)}}">{{ i }}</a>
+    {% endif %}
+    {% endfor %}
+</div>
+```
 
 ## 文件监控
 
@@ -443,11 +463,8 @@ def feed():
 ## 部署
 
 ### gun
-
 ### nginx
-
 ### supervisor
-
 ### gevent
 
 ## 服务器/备案/域名

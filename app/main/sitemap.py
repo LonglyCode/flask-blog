@@ -1,7 +1,10 @@
-from flask import render_template,make_response,url_for
 import datetime
+
+from flask import make_response, render_template, url_for
+
 from . import main
-from ..models import Post,Category
+from ..models import Category, Post
+
 
 @main.route('/sitemap.xsl/')
 def sitemap_xsl():

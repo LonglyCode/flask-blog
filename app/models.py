@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from werkzeug.security import generate_password_hash, check_password_hash
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask import current_app,url_for
-from flask_login import UserMixin, AnonymousUserMixin
-from . import db, login_manager
 from datetime import datetime
-from jinja2.filters import do_striptags, do_truncate
-from .utils import markdown_render
-from werkzeug import cached_property
+
+from flask import current_app, url_for
+from flask_login import AnonymousUserMixin, UserMixin
 from flask_sqlalchemy import BaseQuery
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from jieba.analyse import ChineseAnalyzer
+from jinja2.filters import do_striptags, do_truncate
+from werkzeug import cached_property
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from . import db, login_manager
+from .utils import markdown_render
 
 __all__=['Todo','Permission','Post','User','Role','Tag','Category']
 

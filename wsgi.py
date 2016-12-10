@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from gevent import monkey
+from gevent.wsgi import WSGIServer
+from manage import app as application
+
 monkey.patch_all()
 
-from manage import app as application
-from gevent.wsgi import WSGIServer
 
 if __name__ == '__main__':
     http_server = WSGIServer(('', 5000), application)

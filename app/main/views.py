@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from flask import render_template,redirect,url_for,abort,g,request,current_app
-from . import main
-from .forms import PostForm,SearchForm
-from ..models import Permission,Post,Tag,Category
-from flask_login import current_user
-from app import db
 from collections import defaultdict
-from ..utils import keywords_split,pygments_style_defs
+
+from flask import (abort, current_app, g, redirect, render_template, request,
+                   url_for)
+from flask_login import current_user
 from werkzeug.contrib.atom import AtomFeed, FeedEntry
+
+from app import db
+
+from . import main
+from ..models import Category, Permission, Post, Tag
+from ..utils import keywords_split, pygments_style_defs
+from .forms import PostForm, SearchForm
+
 
 def change_tags(tags):
     l = []

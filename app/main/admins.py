@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+import os.path as op
 from datetime import datetime
 
-from flask import flash, redirect, url_for, request
-from app import admin, db
-from app.models import Post, User, Category, Tag
-from app.decorators import admin_required
-from app.utils import markdown_render,pygmented_markdown
-
-from flask_login import current_user, login_required
+from flask import flash, redirect, request, url_for
 from flask_admin import expose
-from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
+from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import SecureForm
+from flask_login import current_user, login_required
+
+from app import admin, db
+from app.decorators import admin_required
+from app.models import Category, Post, Tag, User
+from app.utils import markdown_render, pygmented_markdown
+
 
 class Roled(object):
 
@@ -92,7 +95,6 @@ class MyFileAdmin(FileAdmin):
         # redirect to login page if user doesn't have access
         return redirect(url_for('main.index', next=request.url))
 
-import os.path as op
 path = op.join(op.dirname(__file__), '../static')
 admin.add_view(PostAdmin(Post, db.session, name='文章'))
 admin.add_view(CategoryAdmin(Category, db.session, name='分类'))

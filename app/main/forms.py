@@ -1,12 +1,14 @@
 #!usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask_wtf import Form
-from wtforms import StringField,SubmitField,TextAreaField,TextField
-from wtforms.validators import Required
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from flask_sqlalchemy import BaseQuery
+from flask_wtf import Form
+from wtforms import StringField, SubmitField, TextAreaField, TextField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms.validators import Required
+
 from ..models import Category
+
 
 class NameForm(Form):
     name = StringField('What is your name?', validators=[Required()])
