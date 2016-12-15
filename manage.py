@@ -11,7 +11,7 @@ import app.Watch as FileWatch
 from app import create_app, db
 from app.models import Category, Permission, Post, Role, Todo, User
 
-app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+app = create_app(os.getenv('FLASK_CONFIG') or 'production')
 manager = Manager(app)
 migrate = Migrate(app, db)
 
