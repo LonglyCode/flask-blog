@@ -47,6 +47,7 @@ class FileWatch(FileSystemEventHandler):
         if self._type ==".md":
             with open(self._path) as f:
                 string = f.read()
+            print "md file is create"
         elif self._type == ".html":
             print "add a new html file,%s"%self._path
 

@@ -17,6 +17,7 @@ class Config:
     WHOOSH_BASE = os.path.join(basedir,'search.db')
     POSTS_PER_PAGE = 5
     CONTENT_PATH =os.path.join(basedir,'PostDir')
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     @staticmethod
     def init_app(app):

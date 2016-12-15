@@ -15,15 +15,15 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
 
-# FileWatch.init_app(app)
+FileWatch.init_app(app)
 whoosh_index(app,Post)
 
 @app.template_filter()
 def format_time(s):
     if "|" in s:
         l = str(s).split("|")
-        l[0] = l[0] + "年"
-        l[1] = l[1] + "月"
+        l[0] = l[0] + u"年"
+        l[1] = l[1] + u"月"
         return ''.join(l)
     return s
 

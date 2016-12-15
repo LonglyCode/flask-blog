@@ -87,7 +87,7 @@ def achieve_posts():
     posts = Post.query.all()
     d=defaultdict(list)
     for p in posts:
-        d[p.pub_time.year+"|"+p.pub_time.month].append(p)
+        d[str(p.pub_time.year)+"|"+str(p.pub_time.month)].append(p)
     return render_template('archives.html',d=d)
 
 
