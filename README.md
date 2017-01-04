@@ -493,12 +493,32 @@ def feed():
 ### watch-dog
 
 ## 部署
-
-### gun
+总所周知的FLASK是遵循WSGI协议的，实现WSGI里的application这一端，所以在部署的时候需要使用gunicorn/uwsgi等WSGI服务器容器进行包裹，最后用nginx进行反向代理。在服务器的响应套路是 nginx路由转发->多个WSGI Server->到flask应用。
+### gunicorn
+先运行gunicorn，最好使用“gevent”模式，可以神奇的地将同步代码变成异步。总的来说只需在命令行运行下面一句话(记得切换到flask应用的根目录下面，manage.py文件所在位置)，监控本地的8000端口，具体的参数可以查gunicorn的文档。
+``` shell
+gunicorn -k "gevent" -w 3 -b 127.0.0.1:8000 manage:app -D
+```
 ### nginx
-### supervisor
-### gevent
+监控默认端口80，然后转发给上面的gunicorn所在端口。
 
+``` shell
+server {
+
+    listen 80;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+}
+```
+执行`service nginx start`运行。可以用`htop`查看nginx和gunicorn进程的运行情况。
+### supervisor
+supervisor 用来将配置和启动命令统一管理，如果是多个应用的话需要用到，单个应用就不要搞得太复杂。也就是这货可有可无，不要被网上的一些配置文章的弄糊涂了。
 ## 服务器/备案/域名
 
 ## TODO
