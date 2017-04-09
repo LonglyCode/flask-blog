@@ -14,22 +14,24 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from . import db, login_manager
 from .utils import markdown_render
 
-__all__=['Todo','Permission','Post','User','Role','Tag','Category']
+__all__ = ['Todo', 'Permission', 'Post', 'User', 'Role', 'Tag', 'Category']
+
 
 class Todo(db.Model):
-    __tablename__="testtodos"
+    __tablename__ = "testtodos"
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(128))
-    time =db.Column(db.DateTime,default=datetime.now())
-    status = db.Column(db.Integer,default=0)
+    time = db.Column(db.DateTime, default=datetime.now())
+    status = db.Column(db.Integer, default=0)
 
     def to_json(self):
         return {
-            'id':self.id,
-            'content':self.content,
-            'time':self.time,
-            'status':self.status
+            'id': self.id,
+            'content': self.content,
+            'time': self.time,
+            'status': self.status
         }
+
 
 class Permission:
     FOLLOW = 0x01
@@ -50,13 +52,11 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.FOLLOW |
-                     Permission.COMMENT |
+            'User': (Permission.FOLLOW | Permission.COMMENT |
                      Permission.WRITE_ARTICLES, True),
-            'Moderator': (Permission.FOLLOW |
-                          Permission.COMMENT |
-                          Permission.WRITE_ARTICLES |
-                          Permission.MODERATE_COMMENTS, False),
+            'Moderator':
+            (Permission.FOLLOW | Permission.COMMENT |
+             Permission.WRITE_ARTICLES | Permission.MODERATE_COMMENTS, False),
             'Administrator': (0xff, False)
         }
         for r in roles:
@@ -80,7 +80,7 @@ class User(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
-    posts = db.relationship('Post',backref='author',lazy='dynamic')
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -172,6 +172,7 @@ class AnonymousUser(AnonymousUserMixin):
     def is_administrator(self):
         return False
 
+
 login_manager.anonymous_user = AnonymousUser
 
 
@@ -183,16 +184,18 @@ def load_user(user_id):
 post_tags_table = db.Table(
     'post_tags',
     db.Model.metadata,
-    db.Column('post_id', db.Integer, db.ForeignKey(
-        "posts.id", ondelete='CASCADE')),
-    db.Column('tag_id', db.Integer, db.ForeignKey(
-        "tags.id", ondelete='CASCADE')),
-)
+    db.Column(
+        'post_id', db.Integer, db.ForeignKey(
+            "posts.id", ondelete='CASCADE')),
+    db.Column(
+        'tag_id', db.Integer, db.ForeignKey(
+            "tags.id", ondelete='CASCADE')), )
+
 
 class Tag(db.Model):
-    __tablename__="tags"
+    __tablename__ = "tags"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), unique=True,nullable=False)
+    name = db.Column(db.String(30), unique=True, nullable=False)
     name_html = db.Column(db.Text)
     __mapper_args__ = {'order_by': [id.desc()]}
 
@@ -200,37 +203,38 @@ class Tag(db.Model):
         return '<Tag %r>' % (self.name)
 
     @staticmethod
-    def on_chang_body(target,value,oldvalue,initiator):
-        target.name_html = markdown_render(value,codehilite=True)
+    def on_chang_body(target, value, oldvalue, initiator):
+        target.name_html = markdown_render(value, codehilite=True)
+
 
 db.event.listen(Tag.name, 'set', Tag.on_chang_body)
 
-class PostQuery(BaseQuery):
 
+class PostQuery(BaseQuery):
     def public(self):
         return self.filter_by(published=True)
 
+
 class Post(db.Model):
     __tablename__ = 'posts'
-    __searchable__= ['body','title','slug']
-    __analyzer__=ChineseAnalyzer()
+    __searchable__ = ['body', 'title', 'slug']
+    __analyzer__ = ChineseAnalyzer()
     # query_class = PostQuery
 
-    id = db.Column(db.Integer,primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     slug = db.Column(db.String(200), nullable=False)
-    title = db.Column(db.String(200),nullable=False)
+    title = db.Column(db.String(200), nullable=False)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
-    pub_time = db.Column(db.DateTime,index=True,default=datetime.now)
+    pub_time = db.Column(db.DateTime, index=True, default=datetime.now)
     summary = db.Column(db.String(2000))
     modified_time = db.Column(db.DateTime, default=datetime.now)
-    author_id = db.Column(db.Integer,db.ForeignKey('users.id'))
-    category_id =db.Column(db.Integer,db.ForeignKey('categorys.id'))
-    published = db.Column(db.Boolean, default=True) # published or not
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('categorys.id'))
+    published = db.Column(db.Boolean, default=True)  # published or not
 
     tags = db.relationship(
         Tag, secondary=post_tags_table, backref=db.backref("posts"))
-
 
     def __repr__(self):
         return '<post %r>' % (self.title)
@@ -246,43 +250,45 @@ class Post(db.Model):
     @cached_property
     def get_next(self):
         try:
-           p = Post.query.get(self.id+1)
+            p = Post.query.get(self.id + 1)
         except Exception:
-           pass
+            pass
         return p
 
     @cached_property
     def get_prev(self):
         try:
-            p = Post.query.get(self.id-1)
+            p = Post.query.get(self.id - 1)
         except Exception:
-           pass
+            pass
         return p
 
     @staticmethod
-    def on_chang_body(target,value,oldvalue,initiator):
-        target.body_html = markdown_render(value,codehilite=True)
+    def on_chang_body(target, value, oldvalue, initiator):
+        target.body_html = markdown_render(value, codehilite=True)
 
     @staticmethod
-    def insert_summary(mapper,connection,target):
+    def insert_summary(mapper, connection, target):
         def _format(_html):
             return do_truncate(do_striptags(_html), length=200)
+
         value = target.body
         if target.summary is None or target.summary.strip() == '':
             target.summary = _format(value)
 
-db.event.listen(Post.body,'set',Post.on_chang_body)
-db.event.listen(Post,'before_insert',Post.insert_summary)
+
+db.event.listen(Post.body, 'set', Post.on_chang_body)
+db.event.listen(Post, 'before_insert', Post.insert_summary)
 
 
 class Category(db.Model):
-    __tablename__="categorys"
+    __tablename__ = "categorys"
 
     id = db.Column(db.Integer, primary_key=True)
-    slug = db.Column(db.String(30),nullable=False)
-    name = db.Column(db.String(30),unique=True,nullable=False)
+    slug = db.Column(db.String(30), nullable=False)
+    name = db.Column(db.String(30), unique=True, nullable=False)
     name_html = db.Column(db.Text)
-    posts = db.relationship('Post',backref='category',lazy='dynamic')
+    posts = db.relationship('Post', backref='category', lazy='dynamic')
 
     def __repr__(self):
         return '<Category %r>' % (self.name)
@@ -296,7 +302,8 @@ class Category(db.Model):
         return url_for('main.category', name=self.name)
 
     @staticmethod
-    def on_chang_body(target,value,oldvalue,initiator):
-        target.name_html = markdown_render(value,codehilite=True)
+    def on_chang_body(target, value, oldvalue, initiator):
+        target.name_html = markdown_render(value, codehilite=True)
+
 
 db.event.listen(Category.name, 'set', Category.on_chang_body)
